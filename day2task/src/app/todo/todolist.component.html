@@ -1,0 +1,39 @@
+<div class="container">
+
+    <h1>To-Do List</h1>
+
+    <hr>
+    <form (ngSubmit)="onSubmit(taskForm)" #taskForm="ngForm">
+        <div class="form-group">
+            <label for="task">Task</label>
+            <input type="text" class="form-control" id="task" placeholder="Enter task" ngModel name="task" required>
+            <small *ngIf="taskForm.invalid && taskForm.dirty" id="errorMessage" class="form-text text-danger">Required
+                field</small>
+        </div>
+
+        <button [disabled]="taskForm.invalid" id="submitButton" type="submit" class="btn btn-primary">Submit</button>
+    </form>
+
+    <hr>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Task</th>
+                <th scope="col">Completed</th>
+                <th scope="col">Delete</th>
+                <th scope="col">Edit</th> <!-- Added Edit column -->
+            </tr>
+        </thead>
+        <tbody cdkDropList (cdkDropListDropped)="onDrop($event)">
+            <tr *ngFor="let t of taskArray; index as i" cdkDrag>
+                <td *ngIf="editIndex !== i; else editField" [class.strike]="t.isCompleted">{{t.taskName}}</td>
+                <ng-template #editField>
+                    <td><input [(ngModel)]="taskArray[i].taskName" (blur)="onEditEnd()" (keydown.enter)="onEditEnd()"></td>
+                </ng-template>
+                <td><input (change)="onCheck(i)" id="myCheckbox" type="checkbox"></td>
+                <td><button class="btn btn-danger btn-sm" (click)="onDelete(i)">Delete</button></td>
+                <td><button class="btn btn-primary btn-sm" (click)="onEdit(i)">&#9998;</button></td>
+            </tr>
+    </table>
+</div>
